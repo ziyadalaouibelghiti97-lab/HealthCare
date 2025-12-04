@@ -22,8 +22,14 @@
           <div class="flex flex-wrap gap-2 max-h-40 overflow-y-auto custom-scrollbar">
             @if (suggestionFilter === 'all') {
               @for (food of foodDatabase; track food.name) {
-                <button (click)="selectFood(food)" class="text-xs bg-orange-50 border border-orange-100 text-orange-700 px-3 py-1 rounded-full hover:bg-orange-100">{{ food.name }} ({{ food.calories }} kcal/{{food.standardAmount}}{{food.unit}})</button>
-              }
+                <button
+                  (click)="selectFood(food)"
+                  class="flex flex-col items-center justify-center aspect-square bg-white border border-gray-200 rounded-2xl p-2 hover:bg-orange-50 hover:border-orange-400 hover:shadow transition-all duration-200 text-center"
+                >
+                  <span class="text-5xl mb-2">{{ food.icon }}</span>
+                  <span class="font-bold text-gray-800 leading-tight">{{ food.name }}</span>
+                  <span class="text-xs text-gray-500 mt-1 font-medium">{{ food.calories }} cal</span>
+                </button>         }
             }
             @if (suggestionFilter === 'custom') {
               @for (food of customFoods; track food.name) {
@@ -61,18 +67,6 @@
             >
               ▼
             </button>
-
-            <!-- Bouton calcul -->
-            <button
-              type="button"
-              (click)="estimateCalories()"
-              [disabled]="!foodName || isAnalyzing"
-              class="absolute right-2 top-2 bottom-2 aspect-square flex items-center justify-center
-             bg-purple-100 text-purple-600 rounded-lg"
-            >
-              ✨
-            </button>
-
             <!-- Liste des suggestions -->
             <ul
               *ngIf="showSuggestions"
@@ -114,6 +108,7 @@
   <!-- MODE RECETTE -->
   @if (mode === 'recipe') {
     <div class="animate-fadeIn">
+
       <input type="text" [(ngModel)]="recipeName" placeholder="Nom de la recette" class="w-full p-2 mb-4 border-b border-purple-200 focus:outline-none text-purple-900 bg-transparent"/>
 
       <div class="bg-purple-50 rounded-lg p-3 mb-4 flex gap-2">

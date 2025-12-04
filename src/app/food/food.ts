@@ -35,7 +35,8 @@ export class Food {
   ingName = '';
   ingCal: string | number = '';
 
-  get allFoods() { return [...this.customFoods, ...this.foodDatabase]; }
+  get allFoods() { return [...this.customFoods, ...this.foodDatabase.sort((a, b) =>
+    a.name.localeCompare(b.name))]; }
   get recipeTotal() { return this.recipeIngredients.reduce((acc, i) => acc + i.calories, 0); }
   suggestions: string[] = [];
 
@@ -119,25 +120,6 @@ export class Food {
     e.stopPropagation();
     this.deleteCustomFood.emit(food);
   }
-
-  async estimateCalories() {
-    if (!this.foodName) return;
-    this.isAnalyzing = true;
-    try {
-      const prompt = `Donne les calories pour "${this.foodName}". JSON: {"calories": number, "unit": "g"|"pièce", "standardAmount": number}.`;
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generatteContent?key=${this.apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
-      const data = await response.json();
-      const res = JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim());
-      if (res.calories) {
-        this.currentBaseCalories = res.calories;
-        this.currentUnit = res.unit || 'g';
-        this.currentStandardAmount = res.standardAmount || 100;
-        this.inputQuantity = this.currentStandardAmount;
-        this.recalcCalories();
-      }
-    } catch (e) { console.error(e); } finally { this.isAnalyzing = false; }
-  }
-
   resetSimple() {
     this.foodName = '';
     this.calories = '';
