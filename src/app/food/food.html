@@ -1,0 +1,96 @@
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6 relative">
+  <!-- Tabs -->
+  <div class="flex gap-4 mb-4 border-b border-gray-100 pb-2">
+    <button (click)="mode = 'simple'" [class]="mode === 'simple' ? 'text-emerald-600 border-b-2 border-emerald-500 font-bold' : 'text-gray-400'" class="pb-2 text-sm transition-all">Repas Rapide</button>
+    <button (click)="mode = 'recipe'" [class]="mode === 'recipe' ? 'text-purple-600 border-b-2 border-purple-500 font-bold' : 'text-gray-400'" class="pb-2 text-sm transition-all">Créer Recette</button>
+  </div>
+
+  <!-- MODE SIMPLE -->
+  @if (mode === 'simple') {
+    <div class="animate-fadeIn">
+      <button (click)="showSuggestions = !showSuggestions" class="w-full text-left text-xs mb-3 flex items-center justify-between text-gray-500 bg-gray-50 p-2 rounded-lg">
+        <span>Suggestions & Mes Plats</span>
+        <span>{{ showSuggestions ? '▼' : '▶' }}</span>
+      </button>
+
+      @if (showSuggestions) {
+        <div class="mb-4 animate-fadeIn">
+          <div class="flex gap-2 mb-2">
+            <button (click)="suggestionFilter = 'all'" [class.font-bold]="suggestionFilter === 'all'" class="text-xs text-orange-500">Tous</button>
+            <button (click)="suggestionFilter = 'custom'" [class.font-bold]="suggestionFilter === 'custom'" class="text-xs text-purple-500">Mes Plats</button>
+          </div>
+          <div class="flex flex-wrap gap-2 max-h-40 overflow-y-auto custom-scrollbar">
+            @if (suggestionFilter === 'all') {
+              @for (food of foodDatabase; track food.name) {
+                <button (click)="selectFood(food)" class="text-xs bg-orange-50 border border-orange-100 text-orange-700 px-3 py-1 rounded-full hover:bg-orange-100">{{ food.name }} ({{ food.calories }} kcal/{{food.standardAmount}}{{food.unit}})</button>
+              }
+            }
+            @if (suggestionFilter === 'custom') {
+              @for (food of customFoods; track food.name) {
+                <div class="inline-flex items-center text-xs bg-purple-50 border border-purple-100 rounded-full mr-2 mb-2">
+                  <button (click)="selectFood(food)" class="px-3 py-1 text-purple-700 hover:bg-purple-100 rounded-l-full">{{ food.name }}</button>
+                  <button (click)="onDeleteCustom(food, $event)" class="px-2 py-1 text-purple-300 hover:text-red-500 rounded-r-full">×</button>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      }
+
+      <form (ngSubmit)="submitFood()" class="flex flex-col gap-3">
+        <div class="relative flex gap-2">
+          <div class="relative w-full">
+            <input list="suggestions" type="text" placeholder="Nom" [(ngModel)]="foodName" name="name" (input)="onNameChange($event)" class="w-full pl-3 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"/>
+            <button type="button" (click)="estimateCalories()" [disabled]="!foodName || isAnalyzing" class="absolute right-2 top-2 bottom-2 aspect-square flex items-center justify-center bg-purple-100 text-purple-600 rounded-lg">✨</button>
+          </div>
+          <datalist id="suggestions">
+            @for (food of allFoods; track food.name) { <option [value]="food.name"></option> }
+          </datalist>
+        </div>
+
+        <div class="flex gap-2">
+          <div class="relative w-1/3">
+            <input type="number" [(ngModel)]="inputQuantity" name="qty" (ngModelChange)="recalcCalories()" placeholder="Qté" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-center"/>
+            <span class="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400">{{ currentUnit }}</span>
+          </div>
+          <div class="relative w-1/3">
+            <input type="number" [(ngModel)]="calories" name="cal" placeholder="Kcal" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-center"/>
+            <span class="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400">kcal</span>
+          </div>
+          <div class="flex gap-1 w-1/3">
+            <button type="button" (click)="onSaveCustom()" [disabled]="!foodName || !calories" class="flex-1 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center">❤️</button>
+            <button type="submit" [disabled]="!foodName || !calories" class="flex-1 bg-emerald-500 text-white rounded-xl flex items-center justify-center">+</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- MODE RECETTE -->
+  @if (mode === 'recipe') {
+    <div class="animate-fadeIn">
+      <input type="text" [(ngModel)]="recipeName" placeholder="Nom de la recette" class="w-full p-2 mb-4 border-b border-purple-200 focus:outline-none text-purple-900 bg-transparent"/>
+
+      <div class="bg-purple-50 rounded-lg p-3 mb-4 flex gap-2">
+        <input type="text" [(ngModel)]="ingName" list="ingredients" (input)="onIngChange($event)" placeholder="Ingrédient" class="w-full p-2 text-sm rounded-lg border border-purple-200"/>
+        <datalist id="ingredients">@for (food of foodDatabase; track food.name) { <option [value]="food.name"></option> }</datalist>
+        <input type="number" [(ngModel)]="ingCal" placeholder="Kcal" class="w-20 p-2 text-sm rounded-lg border border-purple-200"/>
+        <button (click)="addIngredient()" [disabled]="!ingName || !ingCal" class="bg-purple-500 text-white rounded-lg px-3">+</button>
+      </div>
+
+      <div class="mb-4">
+        @for (ing of recipeIngredients; track ing.name; let i = $index) {
+          <div class="flex justify-between text-sm border-b border-gray-50 py-2">
+            <span>{{ ing.name }}</span>
+            <div class="flex gap-3"><span class="text-gray-500">{{ ing.calories }} kcal</span><button (click)="removeIngredient(i)" class="text-red-400">×</button></div>
+          </div>
+        }
+      </div>
+
+      <div class="flex justify-between items-center border-t border-gray-100 pt-3">
+        <p class="font-bold text-purple-700">Total: {{ recipeTotal }} kcal</p>
+        <button (click)="submitRecipe()" [disabled]="recipeIngredients.length === 0 || !recipeName" class="bg-purple-600 text-white px-4 py-2 rounded-xl text-sm shadow-md">Enregistrer</button>
+      </div>
+    </div>
+  }
+</div>
