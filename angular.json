@@ -20,14 +20,13 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
-                "input": "public",
-                "glob": "**/*"
+                "glob": "**/*",
+                "input": "public"
               },
               "src/manifest.webmanifest",
               "src/assets/icons"
             ],
             "serviceWorker": true,
-            "ngswConfigPath": "ngsw-config.json",
             "styles": [
               "src/styles.css"
             ]
@@ -84,8 +83,8 @@
             "tsConfig": "tsconfig.spec.json",
             "assets": [
               {
-                "input": "public",
-                "glob": "**/*"
+                "glob": "**/*",
+                "input": "public"
               }
             ],
             "styles": [
