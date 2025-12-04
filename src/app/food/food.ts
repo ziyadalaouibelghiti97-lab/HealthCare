@@ -41,10 +41,21 @@ export class Food {
 
 
 
+  toggleSuggestions() {
+    this.showSuggestions = !this.showSuggestions;
+
+    // Si on ouvre le menu → afficher tous les aliments (optionnel)
+    if (this.showSuggestions) {
+      this.suggestions = this.allFoods.map(f => f.name).slice(0, 20);
+    }
+  }
+
   selectSuggestion(name: string) {
     this.foodName = name;
-    this.suggestions = [];
+    this.showSuggestions = false;
   }
+
+
 
   // --- SIMPLE FORM LOGIC ---
   selectFood(food: DatabaseItem) {
@@ -66,24 +77,19 @@ export class Food {
     const input = e.target as HTMLInputElement;
     const val = input.value.toLowerCase().trim();
 
-    // ✔ Détection auto quand l'input correspond exactement à un aliment
-    const exactMatch = this.allFoods.find(f => f.name.toLowerCase() === val);
-    if (exactMatch) {
-      this.selectFood(exactMatch);
-    }
-
-    // ✔ Si l’input est vide
     if (!val) {
       this.suggestions = [];
       return;
     }
 
-    // ✔ Suggestions
     this.suggestions = this.allFoods
       .filter(f => f.name.toLowerCase().includes(val))
       .map(f => f.name)
       .slice(0, 10);
+
+    this.showSuggestions = true; // <= affichage auto quand on tape
   }
+
 
 
   submitFood() {

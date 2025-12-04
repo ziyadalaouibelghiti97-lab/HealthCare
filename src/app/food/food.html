@@ -48,9 +48,19 @@
               [(ngModel)]="foodName"
               name="name"
               (input)="onNameChange($event)"
-              class="w-full pl-3 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl
+              class="w-full pl-3 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl
              focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
+
+            <!-- BOUTON DROPDOWN -->
+            <button
+              type="button"
+              (click)="toggleSuggestions()"
+              class="absolute right-12 top-2 bottom-2 w-8 flex items-center justify-center
+             bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg"
+            >
+              ▼
+            </button>
 
             <!-- Bouton calcul -->
             <button
@@ -65,7 +75,7 @@
 
             <!-- Liste des suggestions -->
             <ul
-              *ngIf="suggestions.length > 0"
+              *ngIf="showSuggestions"
               class="absolute z-50 left-0 right-0 bg-white border border-gray-200 rounded-xl
              shadow-lg mt-1 max-h-56 overflow-y-auto"
             >
@@ -80,6 +90,7 @@
 
           </div>
         </div>
+
 
 
         <div class="flex gap-2">
