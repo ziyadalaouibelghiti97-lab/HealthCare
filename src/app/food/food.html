@@ -38,15 +38,49 @@
       }
 
       <form (ngSubmit)="submitFood()" class="flex flex-col gap-3">
-        <div class="relative flex gap-2">
+        <div class="relative flex gap-2 w-full">
           <div class="relative w-full">
-            <input list="suggestions" type="text" placeholder="Nom" [(ngModel)]="foodName" name="name" (input)="onNameChange($event)" class="w-full pl-3 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"/>
-            <button type="button" (click)="estimateCalories()" [disabled]="!foodName || isAnalyzing" class="absolute right-2 top-2 bottom-2 aspect-square flex items-center justify-center bg-purple-100 text-purple-600 rounded-lg">✨</button>
+
+            <!-- Champ texte -->
+            <input
+              type="text"
+              placeholder="Nom"
+              [(ngModel)]="foodName"
+              name="name"
+              (input)="onNameChange($event)"
+              class="w-full pl-3 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl
+             focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+
+            <!-- Bouton calcul -->
+            <button
+              type="button"
+              (click)="estimateCalories()"
+              [disabled]="!foodName || isAnalyzing"
+              class="absolute right-2 top-2 bottom-2 aspect-square flex items-center justify-center
+             bg-purple-100 text-purple-600 rounded-lg"
+            >
+              ✨
+            </button>
+
+            <!-- Liste des suggestions -->
+            <ul
+              *ngIf="suggestions.length > 0"
+              class="absolute z-50 left-0 right-0 bg-white border border-gray-200 rounded-xl
+             shadow-lg mt-1 max-h-56 overflow-y-auto"
+            >
+              <li
+                *ngFor="let item of suggestions"
+                (click)="selectSuggestion(item)"
+                class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+              >
+                {{ item }}
+              </li>
+            </ul>
+
           </div>
-          <datalist id="suggestions">
-            @for (food of allFoods; track food.name) { <option [value]="food.name"></option> }
-          </datalist>
         </div>
+
 
         <div class="flex gap-2">
           <div class="relative w-1/3">

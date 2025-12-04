@@ -37,6 +37,14 @@ export class Food {
 
   get allFoods() { return [...this.customFoods, ...this.foodDatabase]; }
   get recipeTotal() { return this.recipeIngredients.reduce((acc, i) => acc + i.calories, 0); }
+  suggestions: string[] = [];
+
+
+
+  selectSuggestion(name: string) {
+    this.foodName = name;
+    this.suggestions = [];
+  }
 
   // --- SIMPLE FORM LOGIC ---
   selectFood(food: DatabaseItem) {
@@ -55,10 +63,28 @@ export class Food {
   }
 
   onNameChange(e: Event) {
-    const val = (e.target as HTMLInputElement).value;
-    const match = this.allFoods.find(f => f.name.toLowerCase() === val.toLowerCase());
-    if (match) this.selectFood(match);
+    const input = e.target as HTMLInputElement;
+    const val = input.value.toLowerCase().trim();
+
+    // ✔ Détection auto quand l'input correspond exactement à un aliment
+    const exactMatch = this.allFoods.find(f => f.name.toLowerCase() === val);
+    if (exactMatch) {
+      this.selectFood(exactMatch);
+    }
+
+    // ✔ Si l’input est vide
+    if (!val) {
+      this.suggestions = [];
+      return;
+    }
+
+    // ✔ Suggestions
+    this.suggestions = this.allFoods
+      .filter(f => f.name.toLowerCase().includes(val))
+      .map(f => f.name)
+      .slice(0, 10);
   }
+
 
   submitFood() {
     if (!this.foodName || !this.calories) return;
