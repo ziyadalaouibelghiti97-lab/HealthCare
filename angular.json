@@ -26,13 +26,16 @@
               "src/manifest.webmanifest",
               "src/assets/icons"
             ],
-            "serviceWorker": true,
             "styles": [
               "src/styles.css"
             ]
           },
           "configurations": {
             "production": {
+              "outputHashing": "all",
+
+              "serviceWorker": "ngsw-config.json",
+
               "budgets": [
                 {
                   "type": "initial",
@@ -44,8 +47,7 @@
                   "maximumWarning": "100kb",
                   "maximumError": "200kb"
                 }
-              ],
-              "outputHashing": "all"
+              ]
             },
             "development": {
               "optimization": false,
