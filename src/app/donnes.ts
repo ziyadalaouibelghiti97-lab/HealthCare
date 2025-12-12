@@ -104,5 +104,7 @@ export const FOOD_DATABASE: DatabaseItem[] = [
   { name: 'Thon en boîte', calories: 116, standardAmount: 100, unit: 'g', icon: '🐟' },
   { name: 'Viande hachée', calories: 250, standardAmount: 100, unit: 'g', icon: '🥩' },
   { name: 'Yaourt nature', calories: 59, standardAmount: 1, unit: 'pot', icon: '🥛' },
+  { name: 'Huile', calories: 120, standardAmount: 1, unit: 'c.à.s', icon: '🫗' },
+  { name: 'Oeuf', calories: 72, standardAmount: 1, unit: 'pièce', icon: '🥚' }
 ];
 
