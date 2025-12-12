@@ -33,6 +33,7 @@ export const FOOD_DATABASE: DatabaseItem[] = [
   { name: 'Abricot', calories: 48, standardAmount: 100, unit: 'g', icon: '🍑' },
   { name: 'Amandes', calories: 575, standardAmount: 100, unit: 'g', icon: '🌰' },
   { name: 'Ananas', calories: 50, standardAmount: 100, unit: 'g', icon: '🍍' },
+  { name: 'Avocat', calories: 160, standardAmount: 100, unit: 'g', icon: '🥑' },
   { name: 'Barre chocolatée', calories: 250, standardAmount: 1, unit: 'barre', icon: '🍫' },
   { name: 'Banane', calories: 89, standardAmount: 1, unit: 'pièce', icon: '🍌' },
   { name: 'Beurre', calories: 717, standardAmount: 100, unit: 'g', icon: '🧈' },
